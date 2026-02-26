@@ -53,6 +53,10 @@ cookies.txt
 htmlcov/
 *.log
 
+# PyInstaller 构建产物
+/build/
+/dist/
+
 # 项目文档
 CLAUDE.md
 

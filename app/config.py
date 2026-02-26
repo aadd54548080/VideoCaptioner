@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from pathlib import Path
 
 VERSION = "v1.4.0"
@@ -13,11 +14,19 @@ RELEASE_URL = "https://github.com/WEIFENG2333/VideoCaptioner/releases/latest"
 FEEDBACK_URL = "https://github.com/WEIFENG2333/VideoCaptioner/issues"
 
 # 路径
-ROOT_PATH = Path(__file__).parent.parent
+# PyInstaller 打包后，_MEIPASS 指向临时解压目录（包含 resource 等打包资源）
+# 可执行文件所在目录用于存放用户数据（AppData, work-dir）
+if getattr(sys, "frozen", False):
+    # PyInstaller frozen mode
+    ROOT_PATH = Path(sys._MEIPASS)  # type: ignore[attr-defined]
+    _EXE_DIR = Path(sys.executable).parent
+else:
+    ROOT_PATH = Path(__file__).parent.parent
+    _EXE_DIR = ROOT_PATH
 
 RESOURCE_PATH = ROOT_PATH / "resource"
-APPDATA_PATH = ROOT_PATH / "AppData"
-WORK_PATH = ROOT_PATH / "work-dir"
+APPDATA_PATH = _EXE_DIR / "AppData"
+WORK_PATH = _EXE_DIR / "work-dir"
 
 
 BIN_PATH = RESOURCE_PATH / "bin"

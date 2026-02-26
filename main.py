@@ -16,17 +16,23 @@ from app.config import TRANSLATIONS_PATH
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(project_root)
 
-# Use appropriate library folder name based on OS
-lib_folder = "Lib" if platform.system() == "Windows" else "lib"
-plugin_path = os.path.join(
-    sys.prefix, lib_folder, "site-packages", "PyQt5", "Qt5", "plugins"
-)
-os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = plugin_path
-
-# Delete pyd files app*.pyd
-for file in os.listdir():
-    if file.startswith("app") and file.endswith(".pyd"):
-        os.remove(file)
+# Set Qt plugin path
+if getattr(sys, "frozen", False):
+    # PyInstaller bundles Qt plugins alongside the executable
+    _base = os.path.dirname(sys.executable)
+    _candidate = os.path.join(_base, "PyQt5", "Qt5", "plugins")
+    if os.path.isdir(_candidate):
+        os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = _candidate
+else:
+    lib_folder = "Lib" if platform.system() == "Windows" else "lib"
+    plugin_path = os.path.join(
+        sys.prefix, lib_folder, "site-packages", "PyQt5", "Qt5", "plugins"
+    )
+    os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = plugin_path
+    # Delete pyd files app*.pyd (development only)
+    for file in os.listdir():
+        if file.startswith("app") and file.endswith(".pyd"):
+            os.remove(file)
 
 # Now import the modules that depend on the setup above
 from PyQt5.QtCore import Qt, QTranslator  # noqa: E402
