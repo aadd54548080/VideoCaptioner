@@ -71,6 +71,16 @@ jobs:
             Write-Host "ERROR: Executable not found"
             exit 1
           }
+          # Verify ffmpeg and 7z are present
+          $binDir = "dist\VideoCaptioner\resource\bin"
+          foreach ($bin in @("ffmpeg.exe", "7z.exe")) {
+            $p = Join-Path $binDir $bin
+            if (Test-Path $p) {
+              Write-Host "  $bin found ($([math]::Round((Get-Item $p).Length / 1MB, 1)) MB)"
+            } else {
+              Write-Host "  WARNING: $bin not found"
+            }
+          }
         shell: pwsh
 
       - name: Verify build (macOS)

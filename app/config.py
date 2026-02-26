@@ -28,10 +28,11 @@ RESOURCE_PATH = ROOT_PATH / "resource"
 APPDATA_PATH = _EXE_DIR / "AppData"
 WORK_PATH = _EXE_DIR / "work-dir"
 
-
-BIN_PATH = RESOURCE_PATH / "bin"
+# bin 目录需要可写（运行时会下载 Faster-Whisper 等），放在 exe 目录下
+BIN_PATH = _EXE_DIR / "resource" / "bin"
 ASSETS_PATH = RESOURCE_PATH / "assets"
-SUBTITLE_STYLE_PATH = RESOURCE_PATH / "subtitle_style"
+# subtitle_style 需要可写（用户保存自定义样式），放在 exe 目录下
+SUBTITLE_STYLE_PATH = _EXE_DIR / "resource" / "subtitle_style"
 TRANSLATIONS_PATH = RESOURCE_PATH / "translations"
 FONTS_PATH = RESOURCE_PATH / "fonts"
 
@@ -57,3 +58,14 @@ os.environ["PYTHON_VLC_MODULE_PATH"] = str(BIN_PATH / "vlc")
 # 创建路径
 for p in [CACHE_PATH, LOG_PATH, WORK_PATH, MODEL_PATH]:
     p.mkdir(parents=True, exist_ok=True)
+
+# PyInstaller frozen mode: 将预置的可写资源从 _MEIPASS 拷贝到 exe 目录（首次运行）
+if getattr(sys, "frozen", False):
+    import shutil
+
+    _bundled_resource = Path(sys._MEIPASS) / "resource"  # type: ignore[attr-defined]
+    for _dir_name in ("subtitle_style",):
+        _src = _bundled_resource / _dir_name
+        _dst = _EXE_DIR / "resource" / _dir_name
+        if _src.exists() and not _dst.exists():
+            shutil.copytree(_src, _dst)
