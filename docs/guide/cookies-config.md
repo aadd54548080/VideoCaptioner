@@ -144,6 +144,18 @@ VideoCaptioner 使用 [yt-dlp](https://github.com/yt-dlp/yt-dlp) 作为下载引
 完整列表请查看 [yt-dlp 支持列表](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
 
 ---
+YouTube影片下載失敗，嘗試更新yt-dlp
+1. 確認 VideoCaptioner 的 Python 路徑
+2. 預設路徑應該在：C:\Users\USER\AppData\Local\VideoCaptioner\runtime
+3. 打開該資料夾。
+4.在資料夾上方的網址列輸入 cmd 然後按 Enter。
+5.這樣開啟的黑視窗會直接定位在 runtime 資料夾。
+6.檢查yt-dlp版本，輸入指令:.\python.exe -m yt_dlp --version
+7.看下回報版本號
+8.更新yt-dlp，輸入指令:.\python.exe -m pip install -U yt-dlp
+9.檢查yt-dlp版本是否更新成功，輸入指令:.\python.exe -m yt_dlp --version
+10.重開VideoCaptioner
+---
 
 ## 下一步
 
